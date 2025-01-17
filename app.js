@@ -56,7 +56,7 @@ app.use('/', userRoutes);
 
 // Routes
 app.get('/', (req, res) => {
-  res.render('signup'); // Render signup form
+  res.render('index'); // Render signup form
 });
 
 // app.use('/api/auth', authRoutes)

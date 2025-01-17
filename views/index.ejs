@@ -1,20 +1,65 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
+<form action="/signup" method="POST" enctype="multipart/form-data">
+  <label for="name">Name:</label>
+  <input type="text" name="name" id="name" required>
 
+  <label for="table">Table:</label>
+  <input type="text" name="table" id="table" required>
 
+  <div>
+    <label for="image">Upload Image:</label>
+    <input type="file" name="image" id="image">
+  </div>
 
+  <div id="photoSection" style="display:none;">
+    <video id="video" autoplay></video>
+    <button type="button" id="capture">Capture</button>
+    <canvas id="canvas" style="display:none;"></canvas>
+    <input type="hidden" name="cameraImage" id="cameraImage">
+  </div>
 
-    <h1>Guest Registered Successfully!</h1>
-<p>Name: <%= guest.name %></p>
-<p>Table: <%= guest.table %></p>
-<p><img src="<%= guest.imageUrl %>" alt="Guest Image" /></p>
+  <button type="button" id="takePhoto">Take Photo</button>
 
-    
-</body>
-</html>
+  <button type="submit">Submit</button>
+</form>
+
+<script>
+  const video = document.getElementById('video');
+  const canvas = document.getElementById('canvas');
+  const captureButton = document.getElementById('capture');
+  const takePhotoButton = document.getElementById('takePhoto');
+  const photoSection = document.getElementById('photoSection');
+  const cameraImage = document.getElementById('cameraImage');
+
+  // Access the user's camera
+  function startCamera() {
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(stream => {
+        video.srcObject = stream;
+      })
+      .catch(err => {
+        console.error('Error accessing the camera:', err);
+      });
+  }
+
+  // Show the video and capture button when "Take Photo" is clicked
+  takePhotoButton.addEventListener('click', () => {
+    photoSection.style.display = 'block'; // Show the video and buttons
+    startCamera();
+  });
+
+  // Capture the photo and hide the video after capturing
+  captureButton.addEventListener('click', () => {
+    const context = canvas.getContext('2d');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    // Convert the canvas image to a data URL
+    const imageData = canvas.toDataURL('image/png');
+    cameraImage.value = imageData; // Store the image data in a hidden input
+
+    // Hide the video and section again after capturing
+    photoSection.style.display = 'none';
+    alert('Photo captured successfully!');
+  });
+</script>
