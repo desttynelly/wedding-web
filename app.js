@@ -2,9 +2,9 @@ const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
 const dotenv = require('dotenv');
-const userRoutes = require('./routes/userroutes');
+// const userRoutes = require('./routes/userroutes');
 const bodyParser = require('body-parser');
-// const authRoutes = require("./routes/userroutes")
+const authRoutes = require("./routes/userroutes")
 
 dotenv.config();
 const app = express();
@@ -50,7 +50,7 @@ const multer = require('multer');
 const upload = multer({ dest: 'uploads/' }); // Or any storage option
 
 // Routes
-app.use('/', userRoutes);
+// app.use('/', userRoutes);
 
 
 
@@ -59,7 +59,7 @@ app.get('/', (req, res) => {
   res.render('index'); // Render signup form
 });
 
-// app.use('/api/auth', authRoutes)
+app.use('/api/auth', authRoutes)
 
 app.get('/user/:id', async (req, res) => {
   try {
