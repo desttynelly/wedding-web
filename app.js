@@ -55,7 +55,7 @@ app.use('/', userRoutes);
 
 
 // Routes
-app.get('/signup', (req, res) => {
+app.get('/', (req, res) => {
   res.render('signup'); // Render signup form
 });
 
