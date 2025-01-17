@@ -53,13 +53,13 @@ const upload = multer({ dest: 'uploads/' }); // Or any storage option
 // app.use('/', userRoutes);
 
 
+app.use('/api/auth', authRoutes)
 
 // Routes
 app.get('/', (req, res) => {
   res.render('index'); // Render signup form
 });
 
-app.use('/api/auth', authRoutes)
 
 app.get('/user/:id', async (req, res) => {
   try {
