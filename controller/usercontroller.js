@@ -35,8 +35,9 @@ const signup = async (req, res) => {
       // Save the user to the database
       const user = await User.create({ name, table, image: imageUrl });
   
-      // Generate the QR code
-      const qrCodeImage = await QRCode.toDataURL(`Guest Name: ${name}, Table: ${table}`);
+       // Generate the QR code with a link to the user's page
+    const webLink = `https://yourdomain.com/user/${user._id}`; // Replace with your domain
+    const qrCodeImage = await QRCode.toDataURL(webLink);z
   
       // Render the QR code page with the generated QR code
       res.render('qr', { user, qrCodeImage });
