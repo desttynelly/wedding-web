@@ -1,0 +1,81 @@
+
+require('dotenv').config();
+
+
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/' }); // Or any storage option
+
+
+
+// 
+// const { CloudinaryStorage } = require('multer-storage-cloudinary');
+// const cloudinary = require('./public/cloudinaryConfig');
+
+// const storage = new CloudinaryStorage({
+//   cloudinary: cloudinary,
+//   params: {
+//     folder: 'wedding_guests',
+//     allowed_formats: ['jpg', 'png', 'jpeg'],
+//   },
+// });
+
+// const upload = multer({ storage });
+
+const cloudinary = require('../public/');
+
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'wedding_guests',
+    allowed_formats: ['jpg', 'png', 'jpeg'],
+  },
+});
+
+
+
+const path = require("path")
+const authRoutes = require("./routes/userroutes")
+const express = require('express');
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+const Guest = require('./models/Guest');
+
+const app = express();
+
+mongoose.connect(process.env.MONGODB_CONNECTION).then(()=>{console.log("Database Connected")}).catch((err)=>{console.log(err)});
+
+
+
+
+app.set('view engine', 'ejs');
+app.use(bodyParser.urlencoded({ extended: true }));
+
+// Serve static files
+app.use(express.static('public'));
+
+// Routes
+app.get('/signup', (req, res) => {
+  res.render('signup'); // Render signup form
+});
+
+app.use('/api/auth', authRoutes)
+
+app.get('/user/:id', async (req, res) => {
+  try {
+    const guest = await Guest.findById(req.params.id);
+
+    if (!guest) {
+      return res.status(404).send('Guest not found');
+    }
+
+    res.render('user', { guest });
+  } catch (err) {
+    res.status(500).send('Error fetching guest data: ' + err.message);
+  }
+});
+
+// Start the server
+const PORT = 4300;
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
+});
